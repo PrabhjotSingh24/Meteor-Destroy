@@ -1,0 +1,7 @@
+*.vscode
+*.ico
+Main.py
+#->ignores all the directories named
+#PygameForBeginners/ and /PygameForBeginners/
+#ignores only outer directory
+
