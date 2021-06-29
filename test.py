@@ -30,26 +30,8 @@ s_width, s_height = 1280, 720
 pygame.mouse.set_visible(False)
 screen = pygame.display.set_mode((s_width, s_height))
 pygame.display.set_caption("Meteor Destroy")
-
-# Variables
 background = (42, 45, 51)
 score = 0
-laser_interval = 1000
-laser_fire = False
-laser_timer = 0
-meteor_time = 250
-
-# User events
-meteor_event = pygame.USEREVENT
-time_event = pygame.USEREVENT + 1
-meteor_deactivation_event = pygame.USEREVENT + 2
-laser_deactivation_event = pygame.USEREVENT + 3
-spaceship_deactivation_event = pygame.USEREVENT + 4
-
-
-# Groups
-meteor_grp = pygame.sprite.Group()
-laser_grp = pygame.sprite.Group()
 powerup_grp = pygame.sprite.Group()
 
 
@@ -135,6 +117,70 @@ class Laser(pygame.sprite.Sprite):
     # screen.blit(powerup3, )
 
 
+class Powerups:
+    def __init__(self, normal_image, pos, activated_img):
+        self.deactivated = pygame.image.load(normal_image)
+        self.activated = pygame.image.load(activated_img)
+        self.image = self.deactivated
+        self.rect = self.image.get_rect(center=pos)
+
+    def show_on_screen(self):
+        screen.blit(self.image, self.rect)
+
+
+class Laser_Powerup(Powerups):
+    laser_interval = 1000
+
+    def __init__(self, normal_image, activated_img, pos, laser_interval):
+        super().__init__(normal_image, activated_img, pos)
+        self.laser_interval = laser_interval
+
+    @classmethod
+    def activate_laser_powerup(self):
+        self.image = self.activated
+        laser_interval = 500
+
+    @classmethod
+    def deactivate_laser_powerup(self):
+        self.image = self.deactivated
+        self.laser_interval = 1000
+
+
+class Spaceship_Powerup(Powerups):
+    def __init__(self, normal_image, activated_img, pos):
+        super().__init__(normal_image, activated_img, pos)
+
+    def activate_spaceship_powerup(self):
+        self.image = self.activated
+        spaceship_grp.sprite.bubble_powerup()
+
+    def deactivate_spaceship_powerup(self):
+        self.image = self.deactivated
+
+
+class Meteor_Powerup(Powerups):
+    def __init__(self, normal_image, activated_img, pos):
+        super().__init__(normal_image, activated_img, pos)
+
+    def activate_spaceship_powerup(self):
+        self.image = self.activated
+        meteor_grp.y_speed -= 5
+
+    def deactivate_spaceship_powerup(self):
+        self.image = self.deactivated
+        meteor_grp.y_speed += 5
+
+
+powerup1 = Laser_Powerup("powerup1.png", (10+10, 70),
+                         "./powerup1_activated.png")
+powerup2 = Spaceship_Powerup(
+    "powerup2.png", (60+10, 70), "./powerup2_activated.png")
+powerup3 = Meteor_Powerup("powerup3.png", (110+10, 70),
+                          "./powerup3_activated.png")
+
+
+laser_grp = pygame.sprite.Group()
+
 spaceship = SpaceShip(
     "spaceship.png", "spaceship_charged.png", "spaceship_bubbled.png", 100, 100
 )
@@ -142,76 +188,18 @@ spaceship_grp = pygame.sprite.GroupSingle()
 spaceship_grp.add(spaceship)
 
 
-def show_powerups(pwr_up1, pwr_up2, pwr_up3):
-    screen.blit(pwr_up1, (10 - 5 + 10, 50))
-    screen.blit(pwr_up2, (60 - 5 + 10, 50))
-    screen.blit(pwr_up3, (110 - 5 + 10, 50))
+meteor_grp = pygame.sprite.Group()
+meteor_event = pygame.USEREVENT
+time_event = pygame.USEREVENT + 1
+laser_event = pygame.USEREVENT + 2
+laser_fire = False
+laser_timer = 0
+meteor_time = 250
 
-
-meteor_act = False
-
-
-def activate_meteor_powerup():
-    global meteor_act, meteor_time
-    global powerup3, powerup3_activated, powerup3_deactivated
-    if meteor_act == False:
-        powerup3 = powerup3_activated
-        meteor_time = 500
-        meteor_act = True
-    elif meteor_act == True:
-        powerup3 = powerup3_deactivated
-        meteor_act = False
-        meteor_time = 250
-
-
-laser_act = False
-
-
-def activate_laser_powerup():
-    global laser_act, laser_interval
-    global powerup1, powerup1_activated
-    if laser_act == False:
-        powerup1 = powerup1_activated
-        laser_interval = 500
-        pygame.time.set_timer(laser_deactivation_event, 5000)
-        laser_act = True
-
-
-def deactivate_laser_powerup():
-    global laser_act, powerup1, powerup1_deactivated, laser_interval
-    if laser_act == True:
-        powerup1 = powerup1_deactivated
-        laser_act = False
-        laser_interval = 500 * 2
-
-
-spaceship_act = False
-
-
-def activate_spaceship_powerup():
-    global powerup2, powerup2_activated, spaceship_act, powerup2_deactivated
-    if spaceship_act == False:
-        powerup2 = powerup2_activated
-        spaceship_act = True
-    elif spaceship_act == True:
-        powerup2 = powerup2_deactivated
-        spaceship_act = False
-
-
-# Powerups Images
-powerup1_deactivated = pygame.image.load("powerup1.png")
-powerup2_deactivated = pygame.image.load("powerup2.png")
-powerup3_deactivated = pygame.image.load("powerup3.png")
-powerup1_activated = pygame.image.load("powerup1_activated.png")
-powerup2_activated = pygame.image.load("powerup2_activated.png")
-powerup3_activated = pygame.image.load("powerup3_activated.png")
-powerup1 = powerup1_deactivated
-powerup2 = powerup2_deactivated
-powerup3 = powerup3_deactivated
 
 # ? pygame.time.set_timer(<Event to trigger>,<time in milliseconds after which it has to be triggered>)
 pygame.time.set_timer(meteor_event, meteor_time)
-pygame.time.set_timer(time_event, 1000)
+pygame.time.set_timer(time_event, 5000)
 
 
 def show_fps():
@@ -232,7 +220,7 @@ def meteor_gen():
 
 
 def main_logic():
-    global laser_fire, laser_interval
+    global laser_fire
     if pygame.sprite.spritecollide(spaceship_grp.sprite, meteor_grp, dokill=True):
         spaceship_grp.sprite.damage()
         meteor_hit.play()
@@ -245,10 +233,10 @@ def main_logic():
     spaceship_grp.update()
     meteor_grp.draw(screen)
     meteor_grp.update()
-
-    show_powerups(powerup1, powerup2, powerup3)
-    # show_powerups_activated(
-    #     powerup1_activated, powerup2_activated, powerup3_activated)
+    powerup_grp.draw(screen)
+    powerup1.show_on_screen()
+    powerup2.show_on_screen()
+    powerup3.show_on_screen()
     # time between laser shots
     if pygame.time.get_ticks() - laser_timer >= laser_interval:
         laser_fire = True
@@ -258,18 +246,18 @@ def main_logic():
 
 def end_game():
     if spaceship_grp.sprite.health <= 0:
-        font = pygame.font.Font("./nasalization.otf", 50)
+        font = pygame.font.Font("LazenbyCompLiquid.ttf", 50)
         font_render = font.render("Game Over", 1, pygame.Color("white"))
         font_rect = font_render.get_rect(center=(s_width / 2, s_height / 2))
         screen.blit(font_render, font_rect)
-        font2 = pygame.font.Font("./nasalization.otf", 40)
+        font2 = pygame.font.Font("LazenbyCompLiquid.ttf", 40)
         font_render2 = font2.render(
             f"Score: {score}", 1, pygame.Color("white"))
         font_rect2 = font_render2.get_rect(
             center=(s_width / 2, s_height / 2 + font_render.get_height())
         )
         screen.blit(font_render2, font_rect2)
-        font3 = pygame.font.Font("./nasalization.otf", 20)
+        font3 = pygame.font.Font("LazenbyCompLiquid.ttf", 20)
         font_render3 = font3.render(
             f"Meteors Destroyed: {spaceship_grp.sprite.meteors_destroyed}",
             1,
@@ -292,7 +280,6 @@ while run:
         score += main_logic()
     else:
         end_game()
-    # to display frame rate
     # show_fps()
 
     for events in pygame.event.get():
@@ -303,21 +290,17 @@ while run:
             if events.key == pygame.K_q:
                 run = False
                 sys.exit()
-            if events.key == pygame.K_s:
-                activate_spaceship_powerup()
+            if events.key == pygame.K_b:
+                spaceship_grp.sprite.bubble_powerup()
             if events.key == pygame.K_l:
-                activate_laser_powerup()
-            if events.key == pygame.K_m:
-                activate_meteor_powerup()
+                powerup1.activate_laser_powerup()
         if events.type == meteor_event:
             meteor_gen()
-        if events.type == laser_deactivation_event:
-            deactivate_laser_powerup()
         # increasing difficulty
         if events.type == time_event:
-            meteor_time -= 25
-        if meteor_time <= 250:
-            meteor_time = 250
+            meteor_time -= 5
+        if meteor_time <= 170:
+            meteor_time = 170
         if events.type == pygame.MOUSEBUTTONDOWN and laser_fire:
             laser = Laser("Laser.png", events.pos)
             laser_grp.add(laser)
@@ -331,7 +314,6 @@ while run:
             meteor_grp.empty()
             score = 0
             spaceship_grp.sprite.meteors_destroyed = 0
-            meteor_time = 250
-    print(meteor_time)
 
     pygame.display.update()
+    print(laser_interval)
