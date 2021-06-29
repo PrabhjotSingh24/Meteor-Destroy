@@ -37,7 +37,8 @@ score = 0
 laser_interval = 1000
 laser_fire = False
 laser_timer = 0
-meteor_time = 250
+meteor_time = 600
+inc_difficulty = True
 
 # User events
 meteor_event = pygame.USEREVENT
@@ -152,13 +153,19 @@ meteor_act = False
 
 
 def activate_meteor_powerup():
-    global meteor_act, meteor_time
+    global meteor_act, meteor_time, inc_difficulty
     global powerup3, powerup3_activated, powerup3_deactivated
     if meteor_act == False:
         powerup3 = powerup3_activated
         meteor_time = 500
         meteor_act = True
-    elif meteor_act == True:
+        pygame.time.set_timer(meteor_deactivation_event, 7000)
+        inc_difficulty = False
+
+
+def deactivate_meteor_powerup():
+    global meteor_act, powerup3, powerup3_deactivated, meteor_time
+    if meteor_act == True:
         powerup3 = powerup3_deactivated
         meteor_act = False
         meteor_time = 250
@@ -313,9 +320,12 @@ while run:
             meteor_gen()
         if events.type == laser_deactivation_event:
             deactivate_laser_powerup()
+        if events.type == meteor_deactivation_event:
+            deactivate_meteor_powerup()
+            inc_difficulty = True
         # increasing difficulty
-        if events.type == time_event:
-            meteor_time -= 25
+        if events.type == time_event and inc_difficulty == True:
+            meteor_time -= 10
         if meteor_time <= 250:
             meteor_time = 250
         if events.type == pygame.MOUSEBUTTONDOWN and laser_fire:
@@ -333,5 +343,4 @@ while run:
             spaceship_grp.sprite.meteors_destroyed = 0
             meteor_time = 250
     print(meteor_time)
-
     pygame.display.update()
