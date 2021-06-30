@@ -37,7 +37,7 @@ score = 0
 laser_interval = 1000
 laser_fire = False
 laser_timer = 0
-meteor_time = 600
+meteor_time = 250
 inc_difficulty = True
 
 # User events
@@ -55,7 +55,7 @@ powerup_grp = pygame.sprite.Group()
 
 
 class SpaceShip(pygame.sprite.Sprite):
-    def __init__(self, img_path, img_path2, img_path3, x_pos, y_pos) -> None:
+    def __init__(self, img_path, img_path2, img_path3, img_path4, x_pos, y_pos) -> None:
         super().__init__()
         self.charged = pygame.image.load(img_path2)
         self.uncharged = pygame.image.load(img_path)
@@ -63,7 +63,9 @@ class SpaceShip(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(x_pos, y_pos))
         self.health = 5
         self.meteors_destroyed = 0
-        self.spaceship_bubble = pygame.image.load(img_path3)
+        self.spaceship_bubble_uncharged = pygame.image.load(img_path3)
+        self.spaceship_bubble_charged = pygame.image.load(img_path4)
+        self.activated = False
 
     def update(self):
         self.rect.center = pygame.mouse.get_pos()
@@ -90,13 +92,16 @@ class SpaceShip(pygame.sprite.Sprite):
             screen.blit(health_img, (index * 40 + 10, 10))
 
     def charger(self):
-        self.image = self.charged
+        if self.activated == False:
+            self.image = self.charged
+        else:
+            self.image = self.spaceship_bubble_charged
 
     def uncharger(self):
-        self.image = self.uncharged
-
-    def bubble_powerup(self):
-        self.image = self.spaceship_bubble
+        if self.activated == False:
+            self.image = self.uncharged
+        else:
+            self.image = self.spaceship_bubble_uncharged
 
     def damage(self):
         self.health -= 1
@@ -137,7 +142,12 @@ class Laser(pygame.sprite.Sprite):
 
 
 spaceship = SpaceShip(
-    "spaceship.png", "spaceship_charged.png", "spaceship_bubbled.png", 100, 100
+    "spaceship.png",
+    "spaceship_charged.png",
+    "spaceship_bubbled.png",
+    "spaceship_bubbled_charged.png",
+    100,
+    100,
 )
 spaceship_grp = pygame.sprite.GroupSingle()
 spaceship_grp.add(spaceship)
@@ -200,9 +210,17 @@ def activate_spaceship_powerup():
     if spaceship_act == False:
         powerup2 = powerup2_activated
         spaceship_act = True
-    elif spaceship_act == True:
+        pygame.time.set_timer(spaceship_deactivation_event, 5000)
+        spaceship_grp.sprite.activated = True
+
+
+def deactivate_spaceship_powerup():
+    global spaceship_act, powerup2, powerup2_deactivated
+    if spaceship_act == True:
         powerup2 = powerup2_deactivated
         spaceship_act = False
+        spaceship_grp.sprite.activated = False
+
 
 
 # Powerups Images
@@ -240,11 +258,13 @@ def meteor_gen():
 
 def main_logic():
     global laser_fire, laser_interval
-    if pygame.sprite.spritecollide(spaceship_grp.sprite, meteor_grp, dokill=True):
-        spaceship_grp.sprite.damage()
-        meteor_hit.play()
     if pygame.sprite.groupcollide(laser_grp, meteor_grp, True, True):
         spaceship_grp.sprite.meteors_destroyed += 1
+    if spaceship_grp.sprite.activated == True and pygame.sprite.spritecollide(spaceship_grp.sprite, meteor_grp, True):
+        meteor_hit.play()
+    elif spaceship_grp.sprite.activated == False and pygame.sprite.spritecollide(spaceship_grp.sprite, meteor_grp, dokill=True):
+        spaceship_grp.sprite.damage()
+        meteor_hit.play()
 
     laser_grp.draw(screen)
     spaceship_grp.draw(screen)
@@ -323,11 +343,13 @@ while run:
         if events.type == meteor_deactivation_event:
             deactivate_meteor_powerup()
             inc_difficulty = True
-        # increasing difficulty
-        if events.type == time_event and inc_difficulty == True:
-            meteor_time -= 10
-        if meteor_time <= 250:
-            meteor_time = 250
+        if events.type == spaceship_deactivation_event:
+            deactivate_spaceship_powerup()
+        # increasing difficulty ==> it's not working
+        # if events.type == time_event and inc_difficulty == True:
+        #     meteor_time -= 10
+        # if meteor_time <= 250:
+        #     meteor_time = 250
         if events.type == pygame.MOUSEBUTTONDOWN and laser_fire:
             laser = Laser("Laser.png", events.pos)
             laser_grp.add(laser)
@@ -342,5 +364,5 @@ while run:
             score = 0
             spaceship_grp.sprite.meteors_destroyed = 0
             meteor_time = 250
-    print(meteor_time)
+    # print(meteor_time)
     pygame.display.update()

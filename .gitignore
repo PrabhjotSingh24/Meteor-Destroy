@@ -1,6 +1,8 @@
 *.vscode
 *.ico
 *.txt
+test.py
+test1.py
 Untitled design (4).png
 Main.py
 #->ignores all the directories named
