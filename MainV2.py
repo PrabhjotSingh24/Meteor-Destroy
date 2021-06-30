@@ -26,7 +26,7 @@ fps = 60
 clock = pygame.time.Clock()
 
 # Screen
-s_width, s_height = 1280, 720
+s_width, s_height = 1536, 864
 pygame.mouse.set_visible(False)
 screen = pygame.display.set_mode((s_width, s_height))
 pygame.display.set_caption("Meteor Destroy")
