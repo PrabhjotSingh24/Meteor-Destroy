@@ -327,12 +327,12 @@ def end_game():
             write_high_score(score)
         font = pygame.font.Font("./nasalization.otf", 50)
         font_render = font.render("Game Over", 1, pygame.Color("white"))
-        font_rect = font_render.get_rect(center=(s_width / 2, s_height / 2))
+        font_rect = font_render.get_rect(center=(s_width / 2, s_height / 2 - 50))
         screen.blit(font_render, font_rect)
         font2 = pygame.font.Font("./nasalization.otf", 40)
         font_render2 = font2.render(f"Score: {score}", 1, pygame.Color("white"))
         font_rect2 = font_render2.get_rect(
-            center=(s_width / 2, s_height / 2 + font_render.get_height())
+            center=(s_width / 2, s_height / 2 + font_render.get_height() - 50)
         )
         screen.blit(font_render2, font_rect2)
         font_render4 = font2.render(
@@ -341,7 +341,10 @@ def end_game():
         font_rect4 = font_render4.get_rect(
             center=(
                 s_width / 2,
-                s_height / 2 + font_render.get_height() + font_render4.get_height(),
+                s_height / 2
+                + font_render.get_height()
+                + font_render4.get_height()
+                - 50,
             )
         )
         font3 = pygame.font.Font("./nasalization.otf", 20)
@@ -356,7 +359,8 @@ def end_game():
                 s_height / 2
                 + font_render2.get_height()
                 + font_render.get_height()
-                + font_render4.get_height(),
+                + font_render4.get_height()
+                - 50,
             )
         )
         screen.blit(font_render3, font_rect3)
