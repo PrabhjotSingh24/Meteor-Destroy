@@ -2,7 +2,8 @@
 *.ico
 *.txt
 test.py
-test1.py
+Health_Bar.py
+Health_barV2.py
 Untitled design (4).png
 Main.py
 #->ignores all the directories named

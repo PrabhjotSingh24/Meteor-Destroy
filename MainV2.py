@@ -4,9 +4,10 @@ import time
 from random import choice, randrange
 from pickle import load, dump
 
-# TODO: add an highscore
+# TODO: add an highscore✔
 # TODO: add 3 powerups ✔
-# TODO: difficulty increase
+# TODO: difficulty increase==> not possible as
+# of now coz as the program reaches to the set_timer line the timer gets fixed and i can't change it dynamically
 # TODO: show the keys below powerups✔
 
 pygame.init()
@@ -40,6 +41,7 @@ laser_interval = 1000
 laser_fire = False
 laser_timer = 0
 meteor_time = 250
+powerup_volume = [0, 0, 0]
 
 # User events
 meteor_event = pygame.USEREVENT
@@ -47,9 +49,6 @@ time_event = pygame.USEREVENT + 1
 meteor_deactivation_event = pygame.USEREVENT + 2
 laser_deactivation_event = pygame.USEREVENT + 3
 spaceship_deactivation_event = pygame.USEREVENT + 4
-# meteor_powerup_exhaustion = pygame.USEREVENT + 5
-# laserpowerup_exhaustion = pygame.USEREVENT + 6
-# spaceshipapowerup_exhaustion = pygame.USEREVENT + 7
 
 
 # Groups
@@ -139,10 +138,6 @@ class Laser(pygame.sprite.Sprite):
         self.rect.centery -= self.speed
         if self.rect.centery < -20:
             self.kill()
-
-    # screen.blit(powerup1, (10, 50))
-    # screen.blit(powerup2, )
-    # screen.blit(powerup3, )
 
 
 spaceship = SpaceShip(
@@ -415,5 +410,8 @@ while run:
             score = 0
             spaceship_grp.sprite.meteors_destroyed = 0
             meteor_time = 250
+            spaceship_act = False
+            meteor_act = False
+            laser_act = False
     # print(meteor_time)
     pygame.display.update()
