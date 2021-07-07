@@ -4,12 +4,6 @@ import time
 from random import choice, randrange
 from pickle import load, dump
 
-# TODO: add an highscore✔
-# TODO: add 3 powerups ✔
-# TODO: difficulty increase==> not possible as
-# of now coz as the program reaches to the set_timer line the timer gets fixed and i can't change it dynamically
-# TODO: show the keys below powerups✔
-
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()
@@ -88,10 +82,6 @@ class SpaceShip(pygame.sprite.Sprite):
     def display_health(self):
         health_img = pygame.image.load("shield.png")
         for index, shield in enumerate(range(self.health)):
-            # screen.blit(health_img, (index+20, 10))#! why it does not work?
-            # ? Ans: if we consider the indexes we'll end up with 0,1,2,3,4 and if we add 20 to all of them we'll get 20,21,22,23,24 which is really difficult to see as their is only 1 pixel distance
-            # print((index+20, 10))
-            # print((index*40, 10))
             screen.blit(health_img, (index * 40 + 10, 10))
 
     def charger(self):
@@ -248,7 +238,6 @@ powerup1 = powerup1_deactivated
 powerup2 = powerup2_deactivated
 powerup3 = powerup3_deactivated
 
-# ? pygame.time.set_timer(<Event to trigger>,<time in milliseconds after which it has to be triggered>)
 pygame.time.set_timer(meteor_event, meteor_time)
 pygame.time.set_timer(time_event, 1000)
 
@@ -306,9 +295,6 @@ def main_logic():
     powerup_keys()
 
     show_powerups(powerup1, powerup2, powerup3)
-    # show_powerups_activated(
-    #     powerup1_activated, powerup2_activated, powerup3_activated)
-    # time between laser shots
     if pygame.time.get_ticks() - laser_timer >= laser_interval:
         laser_fire = True
         spaceship_grp.sprite.charger()
@@ -370,8 +356,8 @@ while run:
         score += main_logic()
     else:
         end_game()
-    # to display frame rate
-    # show_fps()
+    # display frame rate
+    show_fps()
 
     for events in pygame.event.get():
         if events.type == pygame.QUIT:
@@ -413,5 +399,4 @@ while run:
             spaceship_act = False
             meteor_act = False
             laser_act = False
-    # print(meteor_time)
     pygame.display.update()
