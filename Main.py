@@ -4,6 +4,7 @@ import time
 from random import choice, randrange
 from pickle import load, dump
 
+
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()
@@ -52,7 +53,7 @@ powerup_grp = pygame.sprite.Group()
 
 
 class SpaceShip(pygame.sprite.Sprite):
-    def __init__(self, img_path, img_path2, img_path3, img_path4, x_pos, y_pos) -> None:
+    def __init__(self, img_path, img_path2, img_path3, img_path4, x_pos, y_pos):
         super().__init__()
         self.charged = pygame.image.load(img_path2)
         self.uncharged = pygame.image.load(img_path)
@@ -258,7 +259,8 @@ def write_high_score(score):
 
 def show_fps():
     font = pygame.font.Font("./Pixellari.ttf", 20)
-    font_render = font.render(f"{int(clock.get_fps())}", 1, pygame.Color("white"))
+    font_render = font.render(
+        f"{int(clock.get_fps())}", 1, pygame.Color("white"))
     screen.blit(font_render, (0, s_height - font_render.get_height()))
 
 
@@ -308,10 +310,12 @@ def end_game():
             write_high_score(score)
         font = pygame.font.Font("./nasalization.otf", 50)
         font_render = font.render("Game Over", 1, pygame.Color("white"))
-        font_rect = font_render.get_rect(center=(s_width / 2, s_height / 2 - 50))
+        font_rect = font_render.get_rect(
+            center=(s_width / 2, s_height / 2 - 50))
         screen.blit(font_render, font_rect)
         font2 = pygame.font.Font("./nasalization.otf", 40)
-        font_render2 = font2.render(f"Score: {score}", 1, pygame.Color("white"))
+        font_render2 = font2.render(
+            f"Score: {score}", 1, pygame.Color("white"))
         font_rect2 = font_render2.get_rect(
             center=(s_width / 2, s_height / 2 + font_render.get_height() - 50)
         )

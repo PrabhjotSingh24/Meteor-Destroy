@@ -1,14 +1,3 @@
 *.vscode
-*.ico
-*.txt
-test.py
-test1.py
-Untitled design (4).png
-Main.py
-Health_Bar.py
-Health_barV2.py
-MainV2copy.py
-#->ignores all the directories named
-#PygameForBeginners/ and /PygameForBeginners/
-#ignores only outer directory
+
 
