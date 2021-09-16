@@ -11,13 +11,13 @@ pygame.mixer.init()
 start_time = time.time()
 
 # music
-background_music = pygame.mixer.Sound("lord_shen.mp3")
+background_music = pygame.mixer.Sound("./music/lord_shen.mp3")
 background_music.set_volume(0.3)
 background_music.play()
 
-laser_shot = pygame.mixer.Sound("laser_shot.mp3")
-laser_charge = pygame.mixer.Sound("laser_charge.mp3")
-meteor_hit = pygame.mixer.Sound("meteor_hit.mp3")
+laser_shot = pygame.mixer.Sound("./music/laser_shot.mp3")
+laser_charge = pygame.mixer.Sound("./music/laser_charge.mp3")
+meteor_hit = pygame.mixer.Sound("./music/meteor_hit.mp3")
 meteor_hit.set_volume(0.5)
 
 fps = 60
@@ -81,7 +81,7 @@ class SpaceShip(pygame.sprite.Sprite):
             self.rect.top = 0
 
     def display_health(self):
-        health_img = pygame.image.load("shield.png")
+        health_img = pygame.image.load("./images/shield.png")
         for index, shield in enumerate(range(self.health)):
             screen.blit(health_img, (index * 40 + 10, 10))
 
@@ -121,7 +121,7 @@ class Meteor(pygame.sprite.Sprite):
 class Laser(pygame.sprite.Sprite):
     def __init__(self, img_path, pos):
         super().__init__()
-        self.image = pygame.image.load("./Laser.png")
+        self.image = pygame.image.load("./images/Laser.png")
         self.rect = self.image.get_rect(center=(pos))
         self.speed = 30
 
@@ -132,10 +132,10 @@ class Laser(pygame.sprite.Sprite):
 
 
 spaceship = SpaceShip(
-    "spaceship.png",
-    "spaceship_charged.png",
-    "spaceship_bubbled.png",
-    "spaceship_bubbled_charged.png",
+    "./images/spaceship.png",
+    "./images/spaceship_charged.png",
+    "./images/spaceship_bubbled.png",
+    "./images/spaceship_bubbled_charged.png",
     100,
     100,
 )
@@ -216,7 +216,7 @@ def deactivate_spaceship_powerup():
 
 
 def powerup_keys():
-    font = pygame.font.Font("nasalization.otf", 15)
+    font = pygame.font.Font("./fonts/nasalization.otf", 15)
     font_render1 = font.render("L", 1, pygame.Color("white"))
     font_render2 = font.render("S", 1, pygame.Color("white"))
     font_render3 = font.render("M", 1, pygame.Color("white"))
@@ -229,12 +229,12 @@ def powerup_keys():
 
 
 # Powerups Images
-powerup1_deactivated = pygame.image.load("powerup1.png")
-powerup2_deactivated = pygame.image.load("powerup2.png")
-powerup3_deactivated = pygame.image.load("powerup3.png")
-powerup1_activated = pygame.image.load("powerup1_activated.png")
-powerup2_activated = pygame.image.load("powerup2_activated.png")
-powerup3_activated = pygame.image.load("powerup3_activated.png")
+powerup1_deactivated = pygame.image.load("./images/powerup1.png")
+powerup2_deactivated = pygame.image.load("./images/powerup2.png")
+powerup3_deactivated = pygame.image.load("./images/powerup3.png")
+powerup1_activated = pygame.image.load("./images/powerup1_activated.png")
+powerup2_activated = pygame.image.load("./images/powerup2_activated.png")
+powerup3_activated = pygame.image.load("./images/powerup3_activated.png")
 powerup1 = powerup1_deactivated
 powerup2 = powerup2_deactivated
 powerup3 = powerup3_deactivated
@@ -258,14 +258,15 @@ def write_high_score(score):
 
 
 def show_fps():
-    font = pygame.font.Font("./Pixellari.ttf", 20)
+    font = pygame.font.Font("./fonts/Pixellari.ttf", 20)
     font_render = font.render(
         f"{int(clock.get_fps())}", 1, pygame.Color("white"))
     screen.blit(font_render, (0, s_height - font_render.get_height()))
 
 
 def meteor_gen():
-    meteor_img = choice(("meteor1.png", "meteor2.png", "meteor3.png"))
+    meteor_img = choice(
+        ("./images/meteor1.png", "./images/meteor2.png", "./images/meteor3.png"))
     x_pos = randrange(50, 1230)
     y_pos = randrange(-150, -50)
     x_speed = randrange(0, 2)
@@ -308,12 +309,12 @@ def end_game():
     if spaceship_grp.sprite.health <= 0:
         if score > high_scoore:
             write_high_score(score)
-        font = pygame.font.Font("./nasalization.otf", 50)
+        font = pygame.font.Font("./fonts/nasalization.otf", 50)
         font_render = font.render("Game Over", 1, pygame.Color("white"))
         font_rect = font_render.get_rect(
             center=(s_width / 2, s_height / 2 - 50))
         screen.blit(font_render, font_rect)
-        font2 = pygame.font.Font("./nasalization.otf", 40)
+        font2 = pygame.font.Font("./fonts/nasalization.otf", 40)
         font_render2 = font2.render(
             f"Score: {score}", 1, pygame.Color("white"))
         font_rect2 = font_render2.get_rect(
@@ -332,7 +333,7 @@ def end_game():
                 - 50,
             )
         )
-        font3 = pygame.font.Font("./nasalization.otf", 20)
+        font3 = pygame.font.Font("./fonts/nasalization.otf", 20)
         font_render3 = font3.render(
             f"Meteors Destroyed: {spaceship_grp.sprite.meteors_destroyed}",
             1,
@@ -387,7 +388,7 @@ while run:
         if events.type == spaceship_deactivation_event:
             deactivate_spaceship_powerup()
         if events.type == pygame.MOUSEBUTTONDOWN and laser_fire:
-            laser = Laser("Laser.png", events.pos)
+            laser = Laser("./images/Laser.png", events.pos)
             laser_grp.add(laser)
             laser_timer = pygame.time.get_ticks()
             laser_fire = False
