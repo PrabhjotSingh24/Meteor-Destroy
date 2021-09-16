@@ -26,7 +26,8 @@ Installing required package
 
     
 ## 🎵 Music
-- music credits goes to their owners
+- music credits goes to their respective owners
+- Background Music 
 [![youtube](https://img.shields.io/badge/Youtube-credits-red)](https://www.youtube.com/watch?v=XZmF30EmY3M)
 
   
